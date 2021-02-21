@@ -5,6 +5,10 @@ import com.expense.bean.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +16,16 @@ import java.util.stream.Collectors;
 public class Expense {
 
     public static final int SCALE = 2;
+
+    public static List<Transaction> collectTransactions(String... transactions) {
+        List<Transaction> allTransactions = new ArrayList<>();
+        Arrays.stream(transactions).forEach(t -> {
+            String[] allFields = t.split(",");
+            allTransactions.add(new Transaction(LocalDate.parse(allFields[0], DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                    new BigDecimal(allFields[1]).setScale(Expense.SCALE, RoundingMode.HALF_EVEN), allFields[2]));
+        });
+        return allTransactions;
+    }
 
     public static Report generateReport(List<Transaction> allTransactions) {
         BigDecimal zero = BigDecimal.ZERO.setScale(SCALE, RoundingMode.HALF_EVEN);

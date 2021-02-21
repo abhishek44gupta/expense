@@ -2,32 +2,17 @@ package tom.test.expense;
 
 import com.expense.Expense;
 import com.expense.bean.Report;
-import com.expense.bean.Transaction;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
+import static com.expense.Expense.collectTransactions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExpenseTest {
-
-    private static List<Transaction> collectTransactions(String... transactions) {
-        List<Transaction> allTransactions = new ArrayList<>();
-        Arrays.stream(transactions).forEach(t -> {
-            String[] allFields = t.split(",");
-            allTransactions.add(new Transaction(LocalDate.parse(allFields[0], DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                    new BigDecimal(allFields[1]).setScale(Expense.SCALE, RoundingMode.HALF_EVEN), allFields[2]));
-        });
-        return allTransactions;
-    }
 
 
     @Test
