@@ -16,12 +16,12 @@ public class Expense {
     public static Report generateReport(List<Transaction> allTransactions) {
         BigDecimal zero = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         if (allTransactions == null || allTransactions.isEmpty()) {
-            return new Report(zero,zero,zero, Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null, zero));
+            return new Report(zero,zero,zero, Report.MonthlyExpensesBuilder.build(null, zero));
         }
         BigDecimal totalIncome = getTotalIncome(allTransactions);
         BigDecimal totalExpense = getTotalExpense(allTransactions);
         BigDecimal totalSaving = totalIncome.subtract(totalExpense);
-        Report.MonthlyTopExpense topExpense = topExpense(allTransactions);
+        Report.MonthlyExpense topExpense = topExpense(allTransactions);
 
         return new Report(totalIncome, totalExpense, totalSaving, topExpense);
     }
@@ -36,10 +36,10 @@ public class Expense {
                 .orElseGet(() -> BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN));
     }
 
-    private static <T extends  Transaction> Report.MonthlyTopExpense topExpense(List<T> allTransactions) {
+    private static <T extends  Transaction> Report.MonthlyExpense topExpense(List<T> allTransactions) {
         return allTransactions.stream().filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
                 .collect(Collectors.groupingBy(t -> t.getDate().getMonth(),Collectors.mapping(t -> t.getAmount().abs().doubleValue(), Collectors.summingDouble(Double::doubleValue))))
-                .entrySet().stream().map(e -> Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(e.getKey(), new BigDecimal(e.getValue()).setScale(2,RoundingMode.HALF_EVEN)))
-                .max(Comparator.comparing(Report.MonthlyTopExpense::getExpense)).orElseGet(() -> Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null,BigDecimal.ZERO.setScale(2,BigDecimal.ROUND_HALF_EVEN)));
+                .entrySet().stream().map(e -> Report.MonthlyExpensesBuilder.build(e.getKey(), new BigDecimal(e.getValue()).setScale(2,RoundingMode.HALF_EVEN)))
+                .max(Comparator.comparing(Report.MonthlyExpense::getExpense)).orElseGet(() -> Report.MonthlyExpensesBuilder.build(null,BigDecimal.ZERO.setScale(2,BigDecimal.ROUND_HALF_EVEN)));
     }
 }

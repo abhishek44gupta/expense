@@ -34,7 +34,7 @@ public class ExpenseTest {
     public void report_NullTransaction() {
         BigDecimal zero = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         Report report = Expense.generateReport(null);
-        Report expected = new Report(zero,zero,zero, Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null, zero));
+        Report expected = new Report(zero,zero,zero, Report.MonthlyExpensesBuilder.build(null, zero));
         assertEquals(expected, report);
     }
 
@@ -42,7 +42,7 @@ public class ExpenseTest {
     public void report_BlankTransaction() {
         BigDecimal zero = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         Report report = Expense.generateReport(Collections.emptyList());
-        Report expected = new Report(zero,zero,zero, Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null,zero));
+        Report expected = new Report(zero,zero,zero, Report.MonthlyExpensesBuilder.build(null,zero));
         assertEquals(expected, report);
     }
 
@@ -64,7 +64,7 @@ public class ExpenseTest {
                 new BigDecimal("21201.40").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("16042.99").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("5158.41").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
-                Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(Month.FEBRUARY, new BigDecimal("6000.80").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
+                Report.MonthlyExpensesBuilder.build(Month.FEBRUARY, new BigDecimal("6000.80").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
         assertEquals(expected, report);
     }
 
@@ -78,7 +78,7 @@ public class ExpenseTest {
                 new BigDecimal("0").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("-4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
-                Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(Month.JANUARY, new BigDecimal("4000.00").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
+                Report.MonthlyExpensesBuilder.build(Month.JANUARY, new BigDecimal("4000.00").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
         assertEquals(expected, report);
     }
 
@@ -92,7 +92,7 @@ public class ExpenseTest {
                 new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("0").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
-                Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null, new BigDecimal("0").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
+                Report.MonthlyExpensesBuilder.build(null, new BigDecimal("0").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
         assertEquals(expected, report);
     }
 
@@ -107,7 +107,7 @@ public class ExpenseTest {
                 new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
                 new BigDecimal("0").setScale(Expense.SCALE, RoundingMode.HALF_EVEN),
-                Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(Month.JANUARY, new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
+                Report.MonthlyExpensesBuilder.build(Month.JANUARY, new BigDecimal("4000").setScale(Expense.SCALE, RoundingMode.HALF_EVEN)));
         assertEquals(expected, report);
     }
 }
