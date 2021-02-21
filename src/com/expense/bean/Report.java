@@ -18,6 +18,15 @@ public class Report {
             this.month = month;
             this.expense = expense;
         }
+
+        public Month getMonth() {
+            return month;
+        }
+
+        public BigDecimal getExpense() {
+            return expense;
+        }
+
         @Override
         public String toString() {
             return expense + "@" + (month == null ? "" : month);

@@ -5,9 +5,8 @@ import com.expense.bean.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Month;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Expense {
@@ -37,21 +36,10 @@ public class Expense {
                 .orElseGet(() -> BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN));
     }
 
-    private static Report.MonthlyTopExpense topExpense(List<Transaction> allTransactions) {
-        Map<Month, List<Transaction>> monthListMap = allTransactions.stream().filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
-                .collect(Collectors.groupingBy(t -> t.getDate().getMonth()));
-        BigDecimal maxExpense = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-        Month relatedMonth = null;
-        for (Month month : monthListMap.keySet()) {
-            BigDecimal totalExpenseOfMonth = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-            for (Transaction transaction : monthListMap.get(month)) {
-                totalExpenseOfMonth = totalExpenseOfMonth.add(transaction.getAmount().abs());
-            }
-            if (totalExpenseOfMonth.compareTo(maxExpense) > 0) {
-                maxExpense = totalExpenseOfMonth;
-                relatedMonth = month;
-            }
-        }
-        return Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(relatedMonth, maxExpense);
+    private static <T extends  Transaction> Report.MonthlyTopExpense topExpense(List<T> allTransactions) {
+        return allTransactions.stream().filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
+                .collect(Collectors.groupingBy(t -> t.getDate().getMonth(),Collectors.mapping(t -> t.getAmount().abs().doubleValue(), Collectors.summingDouble(Double::doubleValue))))
+                .entrySet().stream().map(e -> Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(e.getKey(), new BigDecimal(e.getValue()).setScale(2,RoundingMode.HALF_EVEN)))
+                .max(Comparator.comparing(Report.MonthlyTopExpense::getExpense)).orElseGet(() -> Report.MonthlyTopExpensesBuilder.createMonthlyTopExpense(null,BigDecimal.ZERO.setScale(2,BigDecimal.ROUND_HALF_EVEN)));
     }
 }
